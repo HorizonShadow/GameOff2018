@@ -2,6 +2,23 @@ REM Hello BASIC8!
 REM Entry program.
 REM License: CC-BY.
 REM Press Ctrl+R to run.
+DB = database()
+DB.open("data")
+
+import "ingredient.bas"
+import "bar_mode.bas"
+
+init = false
+persist init
+if not init then
+	import "seed.bas"
+	init = true
+endif
+
+
+
+bar_mode = new(BarMode)
+
 
 drv = driver()
 print drv, ", detail type is: ", typeof(drv);
@@ -11,6 +28,8 @@ buttons = list("L", "R", "U", "D", "A", "B")
 t = 0
 
 def update(delta)
+
+
 	ipt = false
 
 	t = t + delta
@@ -20,7 +39,7 @@ def update(delta)
 	endif
 	rectfill 0, 0, 159, 127
 	text 56, 60, "BASIC8", rgba(255, 255, 255)
-
+	bar_mode.draw()
 	touch 0, tx, ty, tb0
 	if tb0 then
 		ipt = true
@@ -59,3 +78,4 @@ def update(delta)
 enddef
 
 update_with(drv, call(update))
+DB.close()
