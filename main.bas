@@ -2,23 +2,24 @@ REM Hello BASIC8!
 REM Entry program.
 REM License: CC-BY.
 REM Press Ctrl+R to run.
-DB = database()
-DB.open("data")
 
-import "ingredient.bas"
-import "bar_mode.bas"
+spr_ingr_a = load_resource("ingr_a.sprite")
+spr_ingr_b = load_resource("ingr_b.sprite")
+spr_ingr_c = load_resource("ingr_c.sprite")
+spr_ingr_d = load_resource("ingr_d.sprite")
+spr_ingr_a_small = load_resource("ingr_a_small.sprite")
 
-init = false
-persist init
-if not init then
-	import "seed.bas"
-	init = true
+map_bar_mode = load_resource("bar_mode.map")
+
+
+persist ingredient_amounts
+if ingredient_amounts = 0 then
+	ingredient_amounts = list(0, 0, 0, 0)
 endif
+ingredient_sprites = list(spr_ingr_a, spr_ingr_b, spr_ingr_c, spr_ingr_d)
 
-
-
-bar_mode = new(BarMode)
-
+small_ingrs = list()
+mouse_down = false
 
 drv = driver()
 print drv, ", detail type is: ", typeof(drv);
@@ -27,8 +28,26 @@ buttons = list("L", "R", "U", "D", "A", "B")
 
 t = 0
 
-def update(delta)
+def draw_bar_mode()
+	x = 28
+	y = 100
+	x_offset = 32
+	y_offset = 16
+		
+	for i in ingredient_sprites
+		spr i.sprite, x, y
+		x = x + x_offset
+	next
+	
+	x = 28
+	for i in ingredient_amounts
+		text x, 115, i, rgba(255,255,255)
+		x = x + x_offset
+	next
+enddef
 
+def update(delta)
+	
 
 	ipt = false
 
@@ -39,11 +58,33 @@ def update(delta)
 	endif
 	rectfill 0, 0, 159, 127
 	text 56, 60, "BASIC8", rgba(255, 255, 255)
-	bar_mode.draw()
+	map map_bar_mode, 0, 0
+	draw_bar_mode()
+	
 	touch 0, tx, ty, tb0
 	if tb0 then
 		ipt = true
+		if tx > 24 and tx < 36 then
+			if not mouse_down then
+				print "adding to list", ;
+				push(small_ingrs, dict("sprite", spr_ingr_a_small, "x", tx - 2, "y", ty - 2))
+			endif
+		endif
+		mouse_down = true
 		text 0, 0, "MOUSE " + str(tx) + ", " + str(ty), rgba(255, 255, 255)
+	else
+		mouse_down = false
+	endif
+	
+	if mouse_down then
+	
+		i = iterator(small_ingrs)
+		move_next(i)
+		spr get(i, "sprite"), tx - 2, ty - 2
+		while move_next(i)
+			spr get(i, "sprite"), get(i, "x"), get(i, "y")
+			set(i, "y", get(i, "y") - 1)
+		wend
 	endif
 
 	btns0 = nil
