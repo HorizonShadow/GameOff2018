@@ -10,6 +10,9 @@ spr_ingr_b = load_resource("ingr_b.sprite")
 spr_ingr_c = load_resource("ingr_c.sprite")
 spr_ingr_d = load_resource("ingr_d.sprite")
 spr_ingr_a_small = load_resource("ingr_a_small.sprite")
+spr_ingr_b_small = load_resource("ingr_b_small.sprite")
+spr_ingr_c_small = load_resource("ingr_c_small.sprite")
+spr_ingr_d_small = load_resource("ingr_d_small.sprite")
 
 map_bar_mode = load_resource("bar_mode.map")
 
@@ -56,9 +59,17 @@ def update(delta)
 	
 	touch 0, tx, ty, tb0
 	if tb0 then
-		if tx > 24 and tx < 36 then
-			if not mouse_down then
-				new_small_ingr = small_ingr.create(spr_ingr_a_small, tx - 2, ty - 2)
+		if not mouse_down then
+			if ty > 95 and ty < 112 then
+				if tx >= 24 and tx <= 40 then
+					new_small_ingr = small_ingr.create(spr_ingr_a_small, tx - 2, ty - 2)
+				elseif tx >= 56 and tx <= 72 then
+					new_small_ingr = small_ingr.create(spr_ingr_b_small, tx - 2, ty - 2)
+				elseif tx >= 88 and tx <= 104 then
+					new_small_ingr = small_ingr.create(spr_ingr_c_small, tx - 2, ty - 2)
+				elseif tx >= 120 and tx <= 136 then
+					new_small_ingr = small_ingr.create(spr_ingr_d_small, tx - 2, ty - 2)
+				endif
 			endif
 		endif
 		mouse_down = true
