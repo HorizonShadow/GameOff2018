@@ -27,7 +27,6 @@ small_ingrs = list()
 mouse_down = false
 
 drv = driver()
-print drv, ", detail type is: ", typeof(drv);
 
 buttons = list("L", "R", "U", "D", "A", "B")
 
@@ -88,9 +87,18 @@ def update(delta)
 		endif
 	endif
 	
+	items_to_remove = list()
 	for ingr in small_ingrs
-		ingr.draw()
-		ingr.move()
+		if ingr.x >= 71 and ingr.x <= 85 and ingr.y > 65 and ingr.y < 80 then
+			push(items_to_remove, index_of(small_ingrs, ingr))
+		else
+			ingr.draw()
+			ingr.move()
+		endif
+	next
+	
+	for ind in items_to_remove
+		remove(small_ingrs, ind)
 	next
 enddef
 
