@@ -27,8 +27,12 @@ class MixMode
 	var request = rnd(9)
 	var mouse_down = false
 	var small_ingrs = list()
+	var coins = list()
 	var ingredient_sprites = list(spr_ingr_a, spr_ingr_b, spr_ingr_c, spr_ingr_d)
 	var ingredient_amounts = list(10,10,10,10)
+	var new_small_ingr = nil
+	var speech = nil
+	var speech_timer = 0
 
 	def draw_bar_mode()
 		x = 28
@@ -50,11 +54,6 @@ class MixMode
 	
 	def set_ingredient_amounts(ingr_amts)
 		ingredient_amounts = ingr_amts
-	enddef
-
-	def draw_requested_recipe()
-		r = get(recipes, request)
-		text 2, 4, r.name, rgba(255,255,255)
 	enddef
 
 	def get_color(char)
@@ -119,18 +118,37 @@ class MixMode
 		spr recipe_sprite, 0, 82
 	enddef
 	
-	def update()
+	def add_coins(n)
+		for i in list(1 to n)
+			c = coin.create(80, 72))
+			c.x_speed = 2 * ((rnd * 2) - 1)
+			c.y_speed = 10 * (rnd + 0.5)
+			push(coins, c)
+		next
+	enddef
+	
+	def draw_top_text() 
+		text 2, 4, speech, rgba(255,255,255)
+	enddef
+	
+	def update_game()
+		if speech_timer = 0 then
+			r = get(recipes, request)
+			speech = "I want " + r.name
+		else
+			speech_timer = speech_timer - 1	
+		endif
 		map map_bar_mode, 0, 0
 		draw_fill()
 		draw_bar_mode()
-		draw_requested_recipe()
+		draw_top_text()
 		draw_recipes_button()
 			
 		touch 0, tx, ty, tb0
 		if tb0 then
-			if ty >= 82 and tx >= 0 and tx <= 90 and ty <= 114 then
-				print "menu button clicked";
+			if ty >= 82 and tx >= 0 and tx <= 6 and ty <= 114 then
 				mix_list_open = true
+				print "clicked recipe";
 			endif
 			
 			if not mouse_down then
@@ -176,6 +194,11 @@ class MixMode
 				ingr.move()
 			endif
 		next
+
+		for c in coins
+			c.draw()
+			c.move()
+		next
 		
 		for ind in items_to_remove
 			remove(small_ingrs, ind)
@@ -184,9 +207,31 @@ class MixMode
 		if len(mix) = 4 then
 			selected_recipe = get(recipes, request)
 			if mix = selected_recipe.mix then
-				mix = ""
-				request = rnd(9)
+				add_coins(25)
+			else
+				speech = "What's this!?"
+				speech_timer = 100
 			endif
+			mix = ""
+			request = rnd(9)
+		endif
+	enddef
+	
+	def update_recipes()
+		map recipe_map, 0, 0
+		y = 10
+		x = 20
+		for r in recipes
+			text x, y, r.name  + "  " + r.mix
+			y = y + 10 
+		next
+	enddef
+	
+	def update()
+		if mix_list_open then
+			update_recipes()
+		else
+			update_game()
 		endif
 	enddef
 endclass

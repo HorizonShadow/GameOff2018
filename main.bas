@@ -4,6 +4,8 @@ REM License: CC-BY.
 REM Press Ctrl+R to run.
 
 
+import "floaty.bas"
+import "coin.bas"
 import "small_ingr.bas"
 import "recipe.bas"
 import "mixmode.bas"
