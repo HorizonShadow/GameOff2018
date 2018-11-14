@@ -33,6 +33,7 @@ class MixMode
 	var new_small_ingr = nil
 	var speech = nil
 	var speech_timer = 0
+	var gold = 0
 
 	def draw_bar_mode()
 		x = 28
@@ -125,30 +126,56 @@ class MixMode
 			c.y_speed = 10 * (rnd + 0.5)
 			push(coins, c)
 		next
+		gold = gold + n
 	enddef
 	
 	def draw_top_text() 
 		text 2, 4, speech, rgba(255,255,255)
-	enddef
-	
-	def update_game()
 		if speech_timer = 0 then
 			r = get(recipes, request)
 			speech = "I want " + r.name
 		else
 			speech_timer = speech_timer - 1	
 		endif
+	enddef
+	
+	def process_coins() 
+		items_to_remove = list()
+		for c in coins
+			c.draw()
+			c.move()
+			if c.y > 128 then
+				push(items_to_remove, index_of(coins, c))
+			endif
+		next
+		
+		for i in items_to_remove
+			remove(coins, i)
+		next
+	enddef
+	
+	def new_mix()
+		mix = ""
+		request = rnd(9)
+	enddef
+	
+	def draw_gold_counter()
+		spr spr_coin, 2, 20
+		text 8, 20, gold
+	enddef
+	
+	def update_game()
 		map map_bar_mode, 0, 0
 		draw_fill()
 		draw_bar_mode()
 		draw_top_text()
 		draw_recipes_button()
+		draw_gold_counter()
 			
 		touch 0, tx, ty, tb0
 		if tb0 then
 			if ty >= 82 and tx >= 0 and tx <= 6 and ty <= 114 then
 				mix_list_open = true
-				print "clicked recipe";
 			endif
 			
 			if not mouse_down then
@@ -189,31 +216,31 @@ class MixMode
 			if ingr.x >= 71 and ingr.x <= 85 and ingr.y > 65 and ingr.y < 80 then
 				push(items_to_remove, index_of(small_ingrs, ingr))
 				mix = mix + ingr.name
+			elseif ingr.y > 128 then
+				push(items_to_remove, index_of(small_ingrs, ingr))
 			else
 				ingr.draw()
 				ingr.move()
 			endif
-		next
-
-		for c in coins
-			c.draw()
-			c.move()
 		next
 		
 		for ind in items_to_remove
 			remove(small_ingrs, ind)
 		next
 		
-		if len(mix) = 4 then
-			selected_recipe = get(recipes, request)
-			if mix = selected_recipe.mix then
-				add_coins(25)
-			else
-				speech = "What's this!?"
+		process_coins()
+		
+		selected_recipe = get(recipes, request)
+		mix_length = len(mix)
+		if mix_length > 0 then
+			if mix <> left(selected_recipe.mix, mix_length) then
+				speech = "That's not right!"
 				speech_timer = 100
+				new_mix()
+			elseif mix = selected_recipe.mix then
+				add_coins(25)
+				new_mix()
 			endif
-			mix = ""
-			request = rnd(9)
 		endif
 	enddef
 	
@@ -221,10 +248,15 @@ class MixMode
 		map recipe_map, 0, 0
 		y = 10
 		x = 20
+		touch 0, tx, ty, tb0
 		for r in recipes
 			text x, y, r.name  + "  " + r.mix
 			y = y + 10 
 		next
+		text 150, 1, "X"
+		if tb0 and tx >= 150 and tx <= 158 and ty <= 9 and ty >= 1 then
+			mix_list_open = false
+		endif
 	enddef
 	
 	def update()
