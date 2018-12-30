@@ -9,7 +9,8 @@ spr_ingr_d_small = load_resource("ingr_d_small.sprite")
 map_bar_mode = load_resource("bar_mode.map")
 import "recipe_button.bas"
 import "scene.bas"
-
+import "cup.bas"
+import "mix_mode_map"
 class MixMode(Scene)
 	var mix_list_open = false
 	var recipes = list(
@@ -43,6 +44,13 @@ class MixMode(Scene)
 		me.mix_list_open = true
 	))
 	me.add_object(recipe_button)
+	
+	glass = new(Cup)
+	glass.set_pos(72, 64)
+	me.add_object(glass)
+	
+	background = new(MixModeMap)
+	me.add_object(background)
 
 	def draw_bar_mode()
 		x = 28
@@ -66,40 +74,6 @@ class MixMode(Scene)
 		ingredient_amounts = ingr_amts
 	enddef
 
-	def get_color(char)
-		if char = "A" then
-			return pget(2)
-		elseif char = "B" then
-			return pget(14)
-		elseif char = "C" then
-			return pget(10)
-		else
-			return pget(3)
-		endif
-	enddef
-
-	def draw_first_fill(char)
-		color = get_color(char)
-		rect 78, 77, 82, 79, color
-	enddef
-
-	def draw_second_fill(char)
-		color = get_color(char)
-		rect 78, 75, 82, 77, color
-	enddef
-
-	def draw_third_fill(char)
-		color = get_color(char)
-		line 77, 74, 82, 74, 1, color
-		line 76, 73, 83, 73, 1, color
-	enddef
-
-	def draw_fourth_fill(char)
-		color = get_color(char)
-		line 75, 72, 84, 72, 1, color
-		line 75, 71, 84, 71, 1, color
-	enddef
-
 	def get_mix_recipe()
 		for r in recipes
 			if r.mix = mix then
@@ -108,28 +82,14 @@ class MixMode(Scene)
 		next
 		return nil
 	enddef
-
-	def draw_fill()
-		if len(mix) > 0 then
-			draw_first_fill(mid(mix, 0, 1))
-		endif
-		if len(mix) > 1 then
-			draw_second_fill(mid(mix, 1, 1))
-		endif
-		if len(mix) > 2 then
-			draw_third_fill(mid(mix, 2, 1))
-		endif
-		if len(mix) > 3 then
-			draw_fourth_fill(mid(mix, 3, 1))
-		endif
-	enddef
 	
 	def add_coins(n)
 		for i in list(1 to n)
-			c = coin.create(80, 72))
+			c = new(coin)
+			c.set_pos(72, 80)
 			c.x_speed = 2 * ((rnd * 2) - 1)
 			c.y_speed = 10 * (rnd + 0.5)
-			push(coins, c)
+			me.add_object(coin)
 		next
 		gold = gold + n
 	enddef
@@ -170,9 +130,7 @@ class MixMode(Scene)
 	enddef
 	
 	def update_game()
-		map map_bar_mode, 0, 0
-		draw_fill()
-		draw_bar_mode()
+		me.draw_bar_mode()
 		draw_top_text()
 		
 		draw_gold_counter()

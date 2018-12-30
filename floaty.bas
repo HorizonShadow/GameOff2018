@@ -1,11 +1,10 @@
-class floaty
-	var x = 0;
-	var y = 0;
+import "object.bas"
+class Floaty(Object)
 	var x_speed = 0;
 	var y_speed = 0;
 	var sprite = nil;
 	
-	def set_position(x_in, y_in)
+	def set_pos(x_in, y_in)
 		me.x_speed = me.x - x_in
 		me.y_speed = me.y - y_in
 		

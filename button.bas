@@ -1,8 +1,4 @@
 import "object.bas"
-class Button(Object)
-	var sprite = nil
-	
-	def draw()
-		spr me.sprite, me.x, me.y
-	enddef
+import "sprite.bas"
+class Button(Sprite)
 endclass

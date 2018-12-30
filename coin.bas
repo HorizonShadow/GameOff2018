@@ -1,3 +1,4 @@
+import "floaty.bas"
 spr_coin = load_resource("coin.sprite")
 
 class coin(floaty)

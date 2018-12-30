@@ -5,6 +5,11 @@ class Object
 	var h = 0
 	var click_listeners = list()
 	
+	def set_pos(x_in, y_in)
+		me.x = x_in
+		me.y = y_in
+	enddef
+	
 	def draw()
 		print "An object is missing it's draw method";
 	enddef
