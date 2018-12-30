@@ -3,6 +3,6 @@ class Button(Object)
 	var sprite = nil
 	
 	def draw()
-		spr sprite, x, y
+		spr me.sprite, me.x, me.y
 	enddef
 endclass

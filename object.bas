@@ -11,28 +11,27 @@ class Object
 	
 	def clicked()
 		touch 0, tx, ty, tb0
-		print tx, " ", ty, " ", x, " ", y;
-		if ty >= x and tx >= y and tx <= (x + w) and ty <= (y + h) then
-			return true
-		endif
-		return false
+		return tx >= x and ty >= y and tx <= (me.x + me.w) and ty <= (me.y + me.h)
 	enddef
 	
 	def process_events()
-		if clicked() then
-			process_click_event()
+		if me.clicked() then
+			me.process_click_event()
 		endif
 	enddef
 	
 	def process_click_event()
-		for fn in click_listeners
+		print len(me.click_listeners);
+		for fn in me.click_listeners
 			fn()
 		next
 	enddef
 	
-	def add_event_listeners(event, fn)
-		if event == "click"
-			push(click_listeners, fn)
+	def add_event_listener(event, fn)
+		print event;
+		if event = "click" then
+			print "pushing";
+			push(me.click_listeners, fn)
 		endif
 	enddef
 	

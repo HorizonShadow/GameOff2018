@@ -24,10 +24,7 @@ class MixMode(Scene)
 		recipe.create("Recipe I", "AABD"),
 		recipe.create("Recipe J", "BBCD")
 	)
-	
-	var objects = list(
-		RecipeButton.create(0, 82)
-	)
+
 	var mix = ""
 	var request = rnd(9)
 	var mouse_down = false
@@ -39,15 +36,13 @@ class MixMode(Scene)
 	var speech_timer = 0
 	var gold = 0
 	
-	def create()
-		tmp = new(MixMode)
-		
-		recipe_button = RecipeButton.create(0, 82)
-		recipe_button.add_event_listener("click", ~(
-			mix_list_open = true
-		)) 
-		tmp.add_object(recipe_button)
-	enddef
+	recipe_button = new(RecipeButton)
+	recipe_button.set_pos(0, 82)
+	recipe_button.add_event_listener("click", ~()(
+		print "lambda";
+		me.mix_list_open = true
+	))
+	me.add_object(recipe_button)
 
 	def draw_bar_mode()
 		x = 28
@@ -267,12 +262,4 @@ class MixMode(Scene)
 			mix_list_open = false
 		endif
 	enddef
-	
-	' def update()
-		'if mix_list_open then
-		'	update_recipes()
-		'else
-		'	update_game()
-		'endif
-	' enddef
 endclass

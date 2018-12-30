@@ -13,7 +13,7 @@ import "small_ingr.bas"
 import "recipe.bas"
 import "mixmode.bas"
 
-mode = "bar"
+mode = "bar"
 
 drv = driver()
 set_orderby(drv, "map")
@@ -23,10 +23,9 @@ buttons = list("L", "R", "U", "D", "A", "B")
 t = 0
 new_small_ingr = nil
 
-mix_mode = new(mixmode)
-mix_mode.set_ingredient_amounts(ingredient_amounts)
+mix_mode = new(MixMode)
+mix_mode.set_ingredient_amounts(ingredient_amounts) 
 def update(delta)
-	touch 0, TX, TY, TB0
 	if mode = "bar" then
 		mix_mode.update()
 	endif

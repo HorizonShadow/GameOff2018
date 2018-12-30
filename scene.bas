@@ -2,11 +2,13 @@ class Scene
 	var objects = list()
 	
 	def add_object(obj)
-		push(objects, obj)
+		push(me.objects, obj)
+		print len(me.objects);
 	enddef
 	
 	def update()
-		for obj in objects
+		for obj in me.objects
+			print "draw";
 			obj.draw()
 			obj.process_events()
 		next

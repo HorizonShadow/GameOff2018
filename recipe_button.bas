@@ -1,14 +1,13 @@
 spr_recipe_button = load_resource("recipe_button.sprite")
 import "button.bas"
 class RecipeButton(Button)
-	def create(x, y)
-		tmp = new(RecipeButton)
-		tmp.x = x
-		tmp.y = y
-		tmp.h = 32
-		tmp.w = 8
-		tmp.sprite = spr_recipe_button
+
+	var h = 32
+	var w = 8
+	var sprite = spr_recipe_button
 	
-		return tmp
+	def set_pos(x_in, y_in)
+		me.x = x_in
+		me.y = y_in
 	enddef
 endclass
