@@ -7,9 +7,10 @@ spr_ingr_b_small = load_resource("ingr_b_small.sprite")
 spr_ingr_c_small = load_resource("ingr_c_small.sprite")
 spr_ingr_d_small = load_resource("ingr_d_small.sprite")
 map_bar_mode = load_resource("bar_mode.map")
-recipe_sprite = load_resource("recipe_button.sprite")
+import "recipe_button.bas"
+import "scene.bas"
 
-class MixMode
+class MixMode(Scene)
 	var mix_list_open = false
 	var recipes = list(
 		recipe.create("Recipe A", "CCDD"),
@@ -23,17 +24,30 @@ class MixMode
 		recipe.create("Recipe I", "AABD"),
 		recipe.create("Recipe J", "BBCD")
 	)
+	
+	var objects = list(
+		RecipeButton.create(0, 82)
+	)
 	var mix = ""
 	var request = rnd(9)
 	var mouse_down = false
 	var small_ingrs = list()
 	var coins = list()
-	var ingredient_sprites = list(spr_ingr_a, spr_ingr_b, spr_ingr_c, spr_ingr_d)
-	var ingredient_amounts = list(10,10,10,10)
+	var ingredient_sprites = list(spr_ingr_a, spr_ingr_b, spr_ingr_c, spr_ingr_d)
 	var new_small_ingr = nil
 	var speech = nil
 	var speech_timer = 0
 	var gold = 0
+	
+	def create()
+		tmp = new(MixMode)
+		
+		recipe_button = RecipeButton.create(0, 82)
+		recipe_button.add_event_listener("click", ~(
+			mix_list_open = true
+		)) 
+		tmp.add_object(recipe_button)
+	enddef
 
 	def draw_bar_mode()
 		x = 28
@@ -114,10 +128,6 @@ class MixMode
 			draw_fourth_fill(mid(mix, 3, 1))
 		endif
 	enddef
-
-	def draw_recipes_button() 
-		spr recipe_sprite, 0, 82
-	enddef
 	
 	def add_coins(n)
 		for i in list(1 to n)
@@ -169,15 +179,14 @@ class MixMode
 		draw_fill()
 		draw_bar_mode()
 		draw_top_text()
-		draw_recipes_button()
+		
 		draw_gold_counter()
 			
 		touch 0, tx, ty, tb0
-		if tb0 then
-			if ty >= 82 and tx >= 0 and tx <= 6 and ty <= 114 then
-				mix_list_open = true
-			endif
-			
+		
+
+		
+		if tb0 then
 			if not mouse_down then
 				if ty > 95 and ty < 112 then
 					if tx >= 24 and tx <= 40 and get(ingredient_amounts, 0) > 0 then
@@ -259,11 +268,11 @@ class MixMode
 		endif
 	enddef
 	
-	def update()
-		if mix_list_open then
-			update_recipes()
-		else
-			update_game()
-		endif
-	enddef
+	' def update()
+		'if mix_list_open then
+		'	update_recipes()
+		'else
+		'	update_game()
+		'endif
+	' enddef
 endclass
