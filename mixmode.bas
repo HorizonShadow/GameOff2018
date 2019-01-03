@@ -11,6 +11,12 @@ import "recipe_button.bas"
 import "scene.bas"
 import "cup.bas"
 import "mix_mode_map"
+import "ingredient_a.bas"
+import "ingredient_b.bas"
+import "ingredient_c.bas"
+import "ingredient_d.bas"
+import "ingr_amounts.bas"
+
 class MixMode(Scene)
 	var mix_list_open = false
 	var recipes = list(
@@ -51,24 +57,26 @@ class MixMode(Scene)
 	
 	background = new(MixModeMap)
 	me.add_object(background)
-
-	def draw_bar_mode()
-		x = 28
-		y = 100
-		x_offset = 32
-		y_offset = 16
-			
-		for i in ingredient_sprites
-			spr i.sprite, x, y
-			x = x + x_offset
-		next
-		
-		x = 24
-		for i in ingredient_amounts
-			text x, 115, i, rgba(255,255,255)
-			x = x + x_offset
-		next
-	enddef
+	
+	ingr_a_placeholder = new(IngredientA)
+	ingr_a_placeholder.set_pos(28, 100)
+	me.add_object(ingr_a_placeholder)	
+	
+	ingr_b_placeholder = new(IngredientB)
+	ingr_b_placeholder.set_pos(60, 100)
+	me.add_object(ingr_b_placeholder)
+	
+	ingr_c_placeholder = new(IngredientC)
+	ingr_c_placeholder.set_pos(92, 100)
+	me.add_object(ingr_c_placeholder)
+	
+	ingr_d_placeholder = new(IngredientD)
+	ingr_d_placeholder.set_pos(124, 100)
+	me.add_object(ingr_d_placeholder)
+	
+	ingr_amounts = new(IngrAmounts)
+	ingr_amounts.set_pos(28, 116)
+	me.add_object(ingr_amounts)
 	
 	def set_ingredient_amounts(ingr_amts)
 		ingredient_amounts = ingr_amts
@@ -130,7 +138,6 @@ class MixMode(Scene)
 	enddef
 	
 	def update_game()
-		me.draw_bar_mode()
 		draw_top_text()
 		
 		draw_gold_counter()
