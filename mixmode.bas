@@ -16,8 +16,11 @@ import "ingredient_b.bas"
 import "ingredient_c.bas"
 import "ingredient_d.bas"
 import "ingr_amounts.bas"
+import "text_obj"
 
-class MixMode(Scene)
+class MixMode
+
+	var obj_manager = new(Scene)
 	var mix_list_open = false
 	var recipes = list(
 		recipe.create("Recipe A", "CCDD"),
@@ -43,40 +46,44 @@ class MixMode(Scene)
 	var speech_timer = 0
 	var gold = 0
 	
-	recipe_button = new(RecipeButton)
-	recipe_button.set_pos(0, 82)
-	recipe_button.add_event_listener("click", ~()(
+	var recipe_button = new(RecipeButton)
+	me.recipe_button.set_pos(0, 82)
+	me.recipe_button.add_event_listener("click", ~()(
 		print "lambda";
 		me.mix_list_open = true
 	))
-	me.add_object(recipe_button)
+	me.obj_manager.add_object(recipe_button)
 	
-	glass = new(Cup)
-	glass.set_pos(72, 64)
-	me.add_object(glass)
+	var glass = new(Cup)
+	me.glass.set_pos(72, 64)
+	me.obj_manager.add_object(glass)
 	
-	background = new(MixModeMap)
-	me.add_object(background)
+	var background = new(MixModeMap)
+	me.obj_manager.add_object(background)
 	
-	ingr_a_placeholder = new(IngredientA)
+	var ingr_a_placeholder = new(IngredientA)
 	ingr_a_placeholder.set_pos(28, 100)
-	me.add_object(ingr_a_placeholder)	
+	obj_manager.add_object(ingr_a_placeholder)	
 	
-	ingr_b_placeholder = new(IngredientB)
-	ingr_b_placeholder.set_pos(60, 100)
-	me.add_object(ingr_b_placeholder)
+	var ingr_b_placeholder = new(IngredientB)
+	me.ingr_b_placeholder.set_pos(60, 100)
+	me.obj_manager.add_object(ingr_b_placeholder)
 	
-	ingr_c_placeholder = new(IngredientC)
-	ingr_c_placeholder.set_pos(92, 100)
-	me.add_object(ingr_c_placeholder)
+	var ingr_c_placeholder = new(IngredientC)
+	me.ingr_c_placeholder.set_pos(92, 100)
+	me.obj_manager.add_object(ingr_c_placeholder)
 	
-	ingr_d_placeholder = new(IngredientD)
-	ingr_d_placeholder.set_pos(124, 100)
-	me.add_object(ingr_d_placeholder)
+	var ingr_d_placeholder = new(IngredientD)
+	me.ingr_d_placeholder.set_pos(124, 100)
+	me.obj_manager.add_object(ingr_d_placeholder)
 	
-	ingr_amounts = new(IngrAmounts)
-	ingr_amounts.set_pos(28, 116)
-	me.add_object(ingr_amounts)
+	var ingr_amounts = new(IngrAmounts)
+	me.ingr_amounts.set_pos(28, 116)
+	me.obj_manager.add_object(ingr_amounts)
+	
+	var mix_request_text = new(TextObj)
+	me.mix_request_text.set_pos(2, 4)
+	me.obj_manager.add_object(mix_request_text)
 	
 	def set_ingredient_amounts(ingr_amts)
 		ingredient_amounts = ingr_amts
@@ -210,6 +217,15 @@ class MixMode(Scene)
 				add_coins(25)
 				new_mix()
 			endif
+		endif
+	enddef
+	
+	def update()
+		obj_manager.update()
+		if speech_timer = 0 then
+			me.mix_request_text.set_text
+		else
+		
 		endif
 	enddef
 	

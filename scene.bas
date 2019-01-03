@@ -2,8 +2,7 @@ class Scene
 	var objects = list()
 	
 	def add_object(obj)
-		push(me.objects, obj)
-		print len(me.objects);
+		push(me.objects, obj)
 	enddef
 	
 	def update()
